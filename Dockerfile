@@ -47,7 +47,7 @@ RUN make build \
   && mv /stage/cmd/writefreely/writefreely /stage
 
 # Final image
-FROM --platform=linux/amd64 alpine:3.18.4
+FROM --platform=linux/amd64 alpine:3.18.0
 LABEL org.opencontainers.image.source=https://github.com/nuvemlgbt/writefreely
 LABEL org.opencontainers.image.description="WriteFreely is a clean, minimalist publishing platform made for writers. Start a blog, share knowledge within your organization, or build a community around the shared act of writing."
 
