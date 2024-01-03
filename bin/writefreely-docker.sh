@@ -90,8 +90,4 @@ fi
 
 ${WRITEFREELY} keys generate
 
-if [ -n "${WRITEFREELY_ADMIN_USER}" ] && [ -n "${WRITEFREELY_ADMIN_PASSWORD}" ]; then
-    ${WRITEFREELY} --create-admin "${WRITEFREELY_ADMIN_USER}:${WRITEFREELY_ADMIN_PASSWORD}"
-fi
-
 exec ${WRITEFREELY}
