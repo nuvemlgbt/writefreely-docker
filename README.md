@@ -18,6 +18,7 @@ already exists, the environment variables will be blissfully ignored.
 
 ### Environment variables
 
+- `WRITEFREELY_DB_TYPE` is the db type. Values: mysql or sqlite3
 - `WRITEFREELY_DB_USERNAME` is the username of MySQL-compatible database.
 - `WRITEFREELY_DB_PASSWORD` is the password of MySQL-compatible database.
 - `WRITEFREELY_DB_DATABASE` is the database of MySQL-compatible database.
@@ -38,3 +39,10 @@ already exists, the environment variables will be blissfully ignored.
 
  1. Enter in the container with the command docker exec -it [container_name] bash
  1. Execute the command '/writefreely/writefreely --create-admin "[username]:[password]"'
+
+## Testing the image (Do not use this for production)
+
+- MariaDB/MySQL: execute-mysql.sh
+- SQLite: execute-sqlite.sh
+
+User: test Password: test

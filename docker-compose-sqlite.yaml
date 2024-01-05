@@ -1,0 +1,23 @@
+version: '2.1'
+
+services:
+  writefreely:
+    build: .
+    container_name: writefreely
+    platform: linux/amd64 
+    ports:
+      - '8080:8080'
+    environment:
+      - WRITEFREELY_DB_TYPE=sqlite3
+      - WRITEFREELY_HOST=http://localhost:8080
+    volumes:
+      - ./writefreely:/data:z
+    networks:
+      - app-network
+
+volumes:
+  mariadb_data:
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,51 @@
+version: '2.1'
+
+services:
+  db:
+    image: docker.io/bitnami/mariadb:11.2
+    container_name: db
+    volumes:
+      - 'mariadb_data:/bitnami/mariadb'
+    ports:
+      - '3306:3306'
+    environment:
+      - MARIADB_USER=writefreely
+      - MARIADB_PASSWORD=test
+      - MARIADB_DATABASE=writefreely
+      - MARIADB_ROOT_PASSWORD=test
+    healthcheck:
+      test: ['CMD', '/opt/bitnami/scripts/mariadb/healthcheck.sh']
+      interval: 15s 
+      timeout: 5s
+      retries: 6
+    networks:
+      - app-network
+
+  writefreely:
+    depends_on:
+      db:
+        condition: service_healthy
+    build: .
+    container_name: writefreely
+    platform: linux/amd64 
+    ports:
+      - '8080:8080'
+    environment:
+      - WRITEFREELY_DB_TYPE=mysql
+      - WRITEFREELY_DB_DATABASE=writefreely
+      - WRITEFREELY_DB_USERNAME=writefreely
+      - WRITEFREELY_DB_PASSWORD=test
+      - WRITEFREELY_DB_HOST=db
+      - WRITEFREELY_DB_PORT=3306
+      - WRITEFREELY_HOST=http://localhost:8080
+    volumes:
+      - ./writefreely:/data:z
+    networks:
+      - app-network
+
+volumes:
+  mariadb_data:
+
+networks:
+  app-network:
+    driver: bridge

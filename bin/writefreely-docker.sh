@@ -14,6 +14,25 @@
 ## You should have received a copy of the GNU Gener`al`` Public License
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+function exec_init_scripts() {
+    echo " START INIT SCRIPTS"
+
+    for script in ./init_scripts/*.sh
+    do
+        # Check if the file is executable
+        if [ -x "$script" ]
+        then
+            # Execute the script
+            echo "Executing $script"
+            "$script"
+        else
+            echo "Skipping non-executable file: $script"
+        fi
+    done
+
+    echo " FINISH INIT SCRIPTS"
+}
+
 set -e
 
 cd /data
@@ -32,14 +51,30 @@ if [ -e ./config.ini ]; then
     fi
 
     ${WRITEFREELY} db migrate
-    
-    exec ${WRITEFREELY}
 
+    if [ "$WRITEFREELY_IGNORE_DB_INIT" != "true" ]; then
+        exec_init_scripts
+    fi
+
+    exec ${WRITEFREELY}
 fi
 
 WRITEFREELY_BIND_PORT="${WRITEFREELY_BIND_PORT:-8080}"
 WRITEFREELY_BIND_HOST="${WRITEFREELY_BIND_HOST:-0.0.0.0}"
 WRITEFREELY_SITE_NAME="${WRITEFREELY_SITE_NAME:-A Writefreely blog}"
+
+if [ "$WRITEFREELY_DB_TYPE" = "mysql" ]; then
+    WRITEFREELY_DB_FILE_NAME=""
+fi
+
+if [ "$WRITEFREELY_DB_TYPE" = "sqlite3" ]; then
+    WRITEFREELY_DB_FILE_NAME="${WRITEFREELY_DB_FILE_NAME:-writefreelydb.db}"
+    WRITEFREELY_DB_USERNAME=""
+    WRITEFREELY_DB_PASSWORD=""
+    WRITEFREELY_DB_DATABASE=""
+    WRITEFREELY_DB_HOST=""
+    WRITEFREELY_DB_PORT=""
+fi
 
 
 cat >./config.ini <<EOF
@@ -55,8 +90,8 @@ pages_parent_dir     = /writefreely
 keys_parent_dir      =
 
 [database]
-type     = mysql
-filename = 
+type     = ${WRITEFREELY_DB_TYPE}
+filename = ${WRITEFREELY_DB_FILE_NAME}
 username = ${WRITEFREELY_DB_USERNAME}
 password = ${WRITEFREELY_DB_PASSWORD}
 database = ${WRITEFREELY_DB_DATABASE}
@@ -89,5 +124,7 @@ else
 fi
 
 ${WRITEFREELY} keys generate
+
+exec_init_scripts
 
 exec ${WRITEFREELY}

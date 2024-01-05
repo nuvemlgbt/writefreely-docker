@@ -48,12 +48,12 @@ RUN make build \
 
 # Final image
 FROM --platform=linux/amd64 alpine:3.18.0
-LABEL org.opencontainers.image.source=https://github.com/nuvemlgbt/writefreely
-LABEL org.opencontainers.image.description="WriteFreely is a clean, minimalist publishing platform made for writers. Start a blog, share knowledge within your organization, or build a community around the shared act of writing."
+LABEL org.opencontainers.image.source https://github.com/nuvemlgbt/writefreely-docker
+LABEL org.opencontainers.image.description "WriteFreely is a clean, minimalist publishing platform made for writers. Start a blog, share knowledge within your organization, or build a community around the shared act of writing."
 
 ARG WRITEFREELY_UID=5000
 
-RUN apk add --no-cache openssl ca-certificates \
+RUN apk add --no-cache openssl ca-certificates bash \
     && adduser -D -H -h /writefreely -u "${WRITEFREELY_UID}" writefreely \
     && install -o writefreely -g writefreely -d /data
 COPY --from=build --chown=writefreely:writefreely /stage /writefreely
