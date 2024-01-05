@@ -1,3 +1,4 @@
 /data/
 /writefreely/config.ini
 /writefreely/keys
+*.db
